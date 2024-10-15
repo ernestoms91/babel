@@ -3,6 +3,7 @@ using System;
 using Babel.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Babel.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241010031957_SeedRoles")]
+    partial class SeedRoles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -110,70 +113,70 @@ namespace Babel.Migrations
                         {
                             Id = 1,
                             Active = true,
-                            CreatedAt = new DateTime(2024, 10, 10, 3, 40, 32, 250, DateTimeKind.Utc).AddTicks(4142),
+                            CreatedAt = new DateTime(2024, 10, 10, 3, 19, 57, 151, DateTimeKind.Utc).AddTicks(7769),
                             Description = "Admin user",
                             Email = "john.doe@example.com",
                             Lastname = "Doe",
                             Name = "John",
                             Nid = "123456789",
                             Phone = "123-456-7890",
-                            UpdatedAt = new DateTime(2024, 10, 10, 3, 40, 32, 250, DateTimeKind.Utc).AddTicks(4143),
+                            UpdatedAt = new DateTime(2024, 10, 10, 3, 19, 57, 151, DateTimeKind.Utc).AddTicks(7769),
                             UserName = "johndoe"
                         },
                         new
                         {
                             Id = 2,
                             Active = true,
-                            CreatedAt = new DateTime(2024, 10, 10, 3, 40, 32, 250, DateTimeKind.Utc).AddTicks(4146),
+                            CreatedAt = new DateTime(2024, 10, 10, 3, 19, 57, 151, DateTimeKind.Utc).AddTicks(7772),
                             Description = "Manager",
                             Email = "jane.smith@example.com",
                             Lastname = "Smith",
                             Name = "Jane",
                             Nid = "987654321",
                             Phone = "987-654-3210",
-                            UpdatedAt = new DateTime(2024, 10, 10, 3, 40, 32, 250, DateTimeKind.Utc).AddTicks(4147),
+                            UpdatedAt = new DateTime(2024, 10, 10, 3, 19, 57, 151, DateTimeKind.Utc).AddTicks(7773),
                             UserName = "janesmith"
                         },
                         new
                         {
                             Id = 3,
                             Active = true,
-                            CreatedAt = new DateTime(2024, 10, 10, 3, 40, 32, 250, DateTimeKind.Utc).AddTicks(4150),
+                            CreatedAt = new DateTime(2024, 10, 10, 3, 19, 57, 151, DateTimeKind.Utc).AddTicks(7775),
                             Description = "HR",
                             Email = "alice.johnson@example.com",
                             Lastname = "Johnson",
                             Name = "Alice",
                             Nid = "123789456",
                             Phone = "456-123-7890",
-                            UpdatedAt = new DateTime(2024, 10, 10, 3, 40, 32, 250, DateTimeKind.Utc).AddTicks(4150),
+                            UpdatedAt = new DateTime(2024, 10, 10, 3, 19, 57, 151, DateTimeKind.Utc).AddTicks(7775),
                             UserName = "alicej"
                         },
                         new
                         {
                             Id = 4,
                             Active = true,
-                            CreatedAt = new DateTime(2024, 10, 10, 3, 40, 32, 250, DateTimeKind.Utc).AddTicks(4152),
+                            CreatedAt = new DateTime(2024, 10, 10, 3, 19, 57, 151, DateTimeKind.Utc).AddTicks(7777),
                             Description = "IT Support",
                             Email = "bob.williams@example.com",
                             Lastname = "Williams",
                             Name = "Bob",
                             Nid = "789456123",
                             Phone = "321-654-9870",
-                            UpdatedAt = new DateTime(2024, 10, 10, 3, 40, 32, 250, DateTimeKind.Utc).AddTicks(4152),
+                            UpdatedAt = new DateTime(2024, 10, 10, 3, 19, 57, 151, DateTimeKind.Utc).AddTicks(7778),
                             UserName = "bobwilliams"
                         },
                         new
                         {
                             Id = 5,
                             Active = true,
-                            CreatedAt = new DateTime(2024, 10, 10, 3, 40, 32, 250, DateTimeKind.Utc).AddTicks(4155),
+                            CreatedAt = new DateTime(2024, 10, 10, 3, 19, 57, 151, DateTimeKind.Utc).AddTicks(7780),
                             Description = "Sales",
                             Email = "charlie.brown@example.com",
                             Lastname = "Brown",
                             Name = "Charlie",
                             Nid = "456789123",
                             Phone = "654-987-1230",
-                            UpdatedAt = new DateTime(2024, 10, 10, 3, 40, 32, 250, DateTimeKind.Utc).AddTicks(4155),
+                            UpdatedAt = new DateTime(2024, 10, 10, 3, 19, 57, 151, DateTimeKind.Utc).AddTicks(7780),
                             UserName = "charliebrown"
                         });
                 });
@@ -191,33 +194,6 @@ namespace Babel.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("UsersRoles");
-
-                    b.HasData(
-                        new
-                        {
-                            UsuarioId = 1,
-                            RoleId = 2
-                        },
-                        new
-                        {
-                            UsuarioId = 2,
-                            RoleId = 1
-                        },
-                        new
-                        {
-                            UsuarioId = 3,
-                            RoleId = 3
-                        },
-                        new
-                        {
-                            UsuarioId = 4,
-                            RoleId = 3
-                        },
-                        new
-                        {
-                            UsuarioId = 5,
-                            RoleId = 3
-                        });
                 });
 
             modelBuilder.Entity("Babel.Models.UserRol", b =>

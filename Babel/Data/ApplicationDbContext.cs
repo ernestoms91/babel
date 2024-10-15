@@ -1,4 +1,5 @@
-﻿using Babel.Models;
+﻿using Babel.Data.SeedData;
+using Babel.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Babel.Data
@@ -28,7 +29,15 @@ namespace Babel.Data
                 .HasOne(ur => ur.Role)
                 .WithMany(r => r.UserRoles)
                 .HasForeignKey(ur => ur.RoleId);
+
+            // Import users seed
+            UserSeedData.SeedUsers(modelBuilder);
+            RolesSeedData.Seed(modelBuilder);
+            UserRoleSeed.Seed(modelBuilder);             
         }
+
+
+
 
 
     }

@@ -2,10 +2,8 @@
 
 namespace Babel.Models.Dtos
 {
-    public class UserDto
+    public class NewUserDto
     {
-        public int Id { get; set; }
-
         [Required(ErrorMessage = "Name is required")]
         [StringLength(50, ErrorMessage = "Name can't be longer than 50 characters")]
         public string Name { get; set; } = string.Empty;
@@ -33,8 +31,8 @@ namespace Babel.Models.Dtos
         [StringLength(500, ErrorMessage = "Description can't be longer than 500 characters")]
         public string Description { get; set; } = string.Empty;
 
-
-        public List<string> Roles { get; set; } = new List<string>();
+        [Range(1, int.MaxValue, ErrorMessage = "Role must be between 1 and 3.")] // Ajusta el rango según tus roles válidos
+        public int Role {  get; set; }
 
     }
 }

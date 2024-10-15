@@ -4,10 +4,12 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace Babel.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class SeedUser : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -35,7 +37,7 @@ namespace Babel.Migrations
                     Lastname = table.Column<string>(type: "text", nullable: false),
                     UserName = table.Column<string>(type: "text", nullable: false),
                     Email = table.Column<string>(type: "text", nullable: false),
-                    active = table.Column<bool>(type: "boolean", nullable: false),
+                    Active = table.Column<bool>(type: "boolean", nullable: false),
                     Nid = table.Column<string>(type: "text", nullable: false),
                     Phone = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
@@ -69,6 +71,18 @@ namespace Babel.Migrations
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "Active", "CreatedAt", "Description", "Email", "Lastname", "Name", "Nid", "Phone", "UpdatedAt", "UserName" },
+                values: new object[,]
+                {
+                    { 1, true, new DateTime(2024, 10, 10, 3, 2, 15, 13, DateTimeKind.Utc).AddTicks(1076), "Admin user", "john.doe@example.com", "Doe", "John", "123456789", "123-456-7890", new DateTime(2024, 10, 10, 3, 2, 15, 13, DateTimeKind.Utc).AddTicks(1076), "johndoe" },
+                    { 2, true, new DateTime(2024, 10, 10, 3, 2, 15, 13, DateTimeKind.Utc).AddTicks(1080), "Manager", "jane.smith@example.com", "Smith", "Jane", "987654321", "987-654-3210", new DateTime(2024, 10, 10, 3, 2, 15, 13, DateTimeKind.Utc).AddTicks(1081), "janesmith" },
+                    { 3, true, new DateTime(2024, 10, 10, 3, 2, 15, 13, DateTimeKind.Utc).AddTicks(1083), "HR", "alice.johnson@example.com", "Johnson", "Alice", "123789456", "456-123-7890", new DateTime(2024, 10, 10, 3, 2, 15, 13, DateTimeKind.Utc).AddTicks(1083), "alicej" },
+                    { 4, true, new DateTime(2024, 10, 10, 3, 2, 15, 13, DateTimeKind.Utc).AddTicks(1086), "IT Support", "bob.williams@example.com", "Williams", "Bob", "789456123", "321-654-9870", new DateTime(2024, 10, 10, 3, 2, 15, 13, DateTimeKind.Utc).AddTicks(1086), "bobwilliams" },
+                    { 5, true, new DateTime(2024, 10, 10, 3, 2, 15, 13, DateTimeKind.Utc).AddTicks(1088), "Sales", "charlie.brown@example.com", "Brown", "Charlie", "456789123", "654-987-1230", new DateTime(2024, 10, 10, 3, 2, 15, 13, DateTimeKind.Utc).AddTicks(1089), "charliebrown" }
                 });
 
             migrationBuilder.CreateIndex(

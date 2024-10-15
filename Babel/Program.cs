@@ -1,11 +1,29 @@
 using Babel.Data;
+using Babel.Repository.IRepository;
+using Babel.Repository;
 using Microsoft.EntityFrameworkCore;
+using Babel.Service.IService;
+using Babel.Service;
+using AutoMapper;
+using Babel.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Config Postgres
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Add repositories
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<IUserRolRepository, UserRoleRepository>();
+
+
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ValidateId>();
+
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 // Add services to the container.
 

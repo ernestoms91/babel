@@ -5,9 +5,12 @@ namespace Babel.Repository.IRepository
     public interface IUserRepository
     {
         List<User> GetUsers();
-        User GetUser(int id);
+
         User CreateUser(User user);
-        User UpdateUser(User user);
+
+        User GetUser(int id);
         void DeleteUser(User user);
+
+        void UpdateUser(User user);
     }
 }

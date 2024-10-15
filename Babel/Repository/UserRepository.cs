@@ -14,15 +14,10 @@ namespace Babel.Repository
             _bd = bd;
         }
 
-        User IUserRepository.CreateUser(User user)
+        public User CreateUser(User user)
         {
             _bd.Users.Add(user);
-
             _bd.SaveChanges();
-
-            // Recarga el objeto para asegurarte de que tenga todos los valores de la base de datos
-            _bd.Entry(user).Reload();
-
             return user;
         }
 
@@ -36,39 +31,24 @@ namespace Babel.Repository
         User IUserRepository.GetUser(int id)
         {
             return _bd.Users
-            .Include(u => u.UserRoles) // Si necesitas incluir roles
-            .FirstOrDefault(u => u.Id == id);
+             .Include(u => u.UserRoles) // Incluye la colección de UserRoles
+            .ThenInclude(ur => ur.Role) // Luego incluye la entidad Role asociada a UserRol
+        .FirstOrDefault(u => u.Id == id); // Busca el usuario por ID
         }
 
-        List<User> IUserRepository.GetUsers()
+        public List<User> GetUsers()
         {
             return _bd.Users
-            .Include(u => u.UserRoles) // Si necesitas incluir roles
-            .ToList();
+                .Include(u => u.UserRoles) // Incluye la relación UserRoles
+                    .ThenInclude(ur => ur.Role) // Incluye la relación Role a través de UserRoles
+                .OrderBy(u => u.UserName) // Ordena los usuarios por UserName
+                .ToList(); // Convierte a lista
         }
 
-        User IUserRepository.UpdateUser(User user)
+        public void UpdateUser(User user)
         {
-            var existingUser = _bd.Users.Find(user.Id);
-            if (existingUser == null)
-            {
-                throw new ArgumentException("Usuario no encontrado.");
-            }
-
-            // Actualiza las propiedades
-            existingUser.Name = user.Name;
-            existingUser.Lastname = user.Lastname;
-            existingUser.UserName = user.UserName;
-            existingUser.Email = user.Email;
-            existingUser.Phone = user.Phone;
-            existingUser.Description = user.Description;
-            existingUser.active = user.active;
-            existingUser.UpdatedAt = DateTime.Now;
-
-            _bd.Users.Update(existingUser);
-            _bd.SaveChanges(); // Guarda los cambios en la base de datos
-
-            return existingUser; // Retorna el usuario actualizado
+           _bd.Users.Entry(user).CurrentValues.SetValues(user);
+            _bd.SaveChanges ();
         }
     }
 }

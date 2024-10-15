@@ -12,15 +12,15 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Babel.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240917045725_init")]
-    partial class init
+    [Migration("20241010030215_SeedUser")]
+    partial class SeedUser
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.0")
+                .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -49,6 +49,9 @@ namespace Babel.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("boolean");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -84,12 +87,81 @@ namespace Babel.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<bool>("active")
-                        .HasColumnType("boolean");
-
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Active = true,
+                            CreatedAt = new DateTime(2024, 10, 10, 3, 2, 15, 13, DateTimeKind.Utc).AddTicks(1076),
+                            Description = "Admin user",
+                            Email = "john.doe@example.com",
+                            Lastname = "Doe",
+                            Name = "John",
+                            Nid = "123456789",
+                            Phone = "123-456-7890",
+                            UpdatedAt = new DateTime(2024, 10, 10, 3, 2, 15, 13, DateTimeKind.Utc).AddTicks(1076),
+                            UserName = "johndoe"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Active = true,
+                            CreatedAt = new DateTime(2024, 10, 10, 3, 2, 15, 13, DateTimeKind.Utc).AddTicks(1080),
+                            Description = "Manager",
+                            Email = "jane.smith@example.com",
+                            Lastname = "Smith",
+                            Name = "Jane",
+                            Nid = "987654321",
+                            Phone = "987-654-3210",
+                            UpdatedAt = new DateTime(2024, 10, 10, 3, 2, 15, 13, DateTimeKind.Utc).AddTicks(1081),
+                            UserName = "janesmith"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Active = true,
+                            CreatedAt = new DateTime(2024, 10, 10, 3, 2, 15, 13, DateTimeKind.Utc).AddTicks(1083),
+                            Description = "HR",
+                            Email = "alice.johnson@example.com",
+                            Lastname = "Johnson",
+                            Name = "Alice",
+                            Nid = "123789456",
+                            Phone = "456-123-7890",
+                            UpdatedAt = new DateTime(2024, 10, 10, 3, 2, 15, 13, DateTimeKind.Utc).AddTicks(1083),
+                            UserName = "alicej"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Active = true,
+                            CreatedAt = new DateTime(2024, 10, 10, 3, 2, 15, 13, DateTimeKind.Utc).AddTicks(1086),
+                            Description = "IT Support",
+                            Email = "bob.williams@example.com",
+                            Lastname = "Williams",
+                            Name = "Bob",
+                            Nid = "789456123",
+                            Phone = "321-654-9870",
+                            UpdatedAt = new DateTime(2024, 10, 10, 3, 2, 15, 13, DateTimeKind.Utc).AddTicks(1086),
+                            UserName = "bobwilliams"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Active = true,
+                            CreatedAt = new DateTime(2024, 10, 10, 3, 2, 15, 13, DateTimeKind.Utc).AddTicks(1088),
+                            Description = "Sales",
+                            Email = "charlie.brown@example.com",
+                            Lastname = "Brown",
+                            Name = "Charlie",
+                            Nid = "456789123",
+                            Phone = "654-987-1230",
+                            UpdatedAt = new DateTime(2024, 10, 10, 3, 2, 15, 13, DateTimeKind.Utc).AddTicks(1089),
+                            UserName = "charliebrown"
+                        });
                 });
 
             modelBuilder.Entity("Babel.Models.UserRol", b =>
