@@ -21,12 +21,7 @@ namespace Babel.Service
 
         public Role GetRole(int id)
         {
-            var role = _roleRepository.GetRole(id);
-            if (role == null)
-            {
-                throw new Exception($"Role with ID {id} not found.");
-            }
-            return role;
+            return  _roleRepository.GetRole(id);
         }
 
         public Role CreateRole(Role role)

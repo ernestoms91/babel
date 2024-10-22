@@ -31,7 +31,7 @@ namespace Babel.Models.Dtos
         [StringLength(500, ErrorMessage = "Description can't be longer than 500 characters")]
         public string Description { get; set; } = string.Empty;
 
-        [Range(1, int.MaxValue, ErrorMessage = "Role must be between 1 and 3.")] // Ajusta el rango según tus roles válidos
+        [Range(1, int.MaxValue, ErrorMessage = "Role must be between 1 and 100000000000000.")] // Ajusta el rango según tus roles válidos
         public int Role {  get; set; }
 
     }

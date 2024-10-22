@@ -20,6 +20,7 @@ builder.Services.AddScoped<IUserRolRepository, UserRoleRepository>();
 
 
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<ValidateId>();
 
 

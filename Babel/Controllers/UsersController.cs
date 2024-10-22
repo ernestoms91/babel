@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Babel.Extensions;
 using Babel.Filters;
 using Babel.Models;
 using Babel.Models.Dtos;
+using Babel.Service;
 using Babel.Service.IService;
 using Microsoft.AspNetCore.Mvc;
 using System.Runtime.InteropServices;
@@ -10,49 +12,42 @@ using System.Runtime.InteropServices;
 namespace Babel.Controllers
 {
     [ApiController]
-    [Route ("api/v1/user")]
+    [Route("api/v1/user")]
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IRoleService _roleService;
         private readonly IMapper _mapper;
 
-        public UsersController(IUserService userService, IMapper mapper)
+        public UsersController(IUserService userService, IRoleService roleService, IMapper mapper)
         {
             _userService = userService;
+            _roleService = roleService;
             _mapper = mapper;
         }
-        
+
         [HttpGet("/all")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetUsers()
         {
-            var listaUsers = _userService.GetUsers();
+            var result = _userService.GetUsers();
 
-            if (listaUsers == null || !listaUsers.Any())
-            {
-                return NotFound((new
+            // Usa el método Match para manejar el resultado
+            return result.Match(
+                onSuccess: users => Ok(new
                 {
-                    status = StatusCodes.Status404NotFound,
-                    message = "No users found.",
-                    timestamp = DateTime.UtcNow,
+                    title = "Users retrieved successfully.",  
+                    status = 200,
+                    data = users  
+                }),
+                onFailure: error => NotFound(new
+                {
+                    title = "No users found.",
+                    status = 404,
+                    error = error.Description  // Detalle del error en la respuesta
                 }));
-            }
 
-            var listaUsersDtos = _mapper.Map<List<UserDto>>(listaUsers);
-
-            //var listaUsersDtos = new List<UserDto>();
-            //foreach (var user in listaUsers)
-            //{
-            //    listaUsersDtos.Add(_mapper.Map<UserDto>(user));
-            //}
-            return Ok(new
-            {
-                status = StatusCodes.Status200OK,
-                message = "Users retrieved successfully.", // Mensaje de éxito
-                timestamp = DateTime.UtcNow,
-                users = listaUsersDtos // Los datos de los usuarios
-            });
         }
 
 
@@ -61,71 +56,74 @@ namespace Babel.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult GetUser(int id)
+        public IActionResult GetUser([FromRoute] int id)
         {
-            var user = _userService.GetUser(id);
+            var result = _userService.GetUser(id);
 
-            if (user == null)
-            {
-                //return NotFound($"User with ID {id} not found.");
-                return NotFound((new
+            // Usa el método Match para manejar el resultado
+            return result.Match(
+                onSuccess: user => Ok(new
                 {
-                    status = StatusCodes.Status404NotFound,
-                    message = $"User with ID {id} not found.",
-                    timestamp = DateTime.UtcNow,
+                    title = "User retrieved successfully.",
+                    status = 200,
+                    data = user
+                }),
+                onFailure: error => NotFound(new
+                {
+                    title = "No user found.",
+                    status = 404,
+                    error = error.Description
                 }));
-            }
 
-            var userDto = _mapper.Map<UserDto>(user);
-
-            return Ok(new
-            {
-                status = StatusCodes.Status200OK,
-                message = "User retrieved successfully.",
-                timestamp = DateTime.UtcNow,
-                user = userDto 
-            });
         }
 
         [HttpPatch("/change/status/{id}")]
         [ServiceFilter(typeof(ValidateId))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)] 
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
-        public IActionResult ChangeUserStatus(int id)
+        public IActionResult ChangeUserStatus([FromRoute] int id)
         {
-            try
-            {
-              var status =  _userService.ChangeUserStatus(id);
-                return Ok(new
-                {
-                    status = StatusCodes.Status200OK,
-                    message = $"User with ID {id} has been {(status ? "enabled" : "disabled")}.",
-                    timestamp = DateTime.UtcNow
-                });
-            }
-            catch (KeyNotFoundException ex)
-            {
-                // Si no se encuentra el usuario, devolver un 404
-                return NotFound((new
-                {
-                    status = StatusCodes.Status404NotFound,
-                    message = $"User with ID {id} not found.",
-                    timestamp = DateTime.UtcNow,
-                }));
-            }
+           var result = _userService.ChangeUserStatus(id);
+
+            return result.Match(
+               onSuccess: user => Ok(new
+               {
+                   title = "User status has been changed",
+                   status = 200,
+                   data = user
+               }),
+               onFailure: error => NotFound(new
+               {
+                   title = "No user found.",
+                   status = 404,
+                   error = error.Description
+               }));
+
         }
 
 
         [HttpPost("/new")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult NewUser(int id)
+        public IActionResult NewUser([FromBody] NewUserDto newUsuarioDto)
         {
-            var user = _userService.GetUser(id);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            
+            var role = _roleService.GetRole(newUsuarioDto.Role);
+
+            if (role == null)
+            {
+                return BadRequest((new
+                {
+                    status = StatusCodes.Status400BadRequest,
+                    message = $"The {role.RoleName} role does not exist.",
+                    timestamp = DateTime.UtcNow,
+                }));
+            }
+
 
 
             return Ok(new

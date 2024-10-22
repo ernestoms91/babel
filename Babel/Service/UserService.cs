@@ -1,4 +1,7 @@
-﻿using Babel.Models;
+﻿using AutoMapper;
+using Babel.Errors;
+using Babel.Models;
+using Babel.Models.Dtos;
 using Babel.Repository.IRepository;
 using Babel.Service.IService;
 
@@ -7,10 +10,12 @@ namespace Babel.Service
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, IMapper mapper)
         {
             _userRepository = userRepository;
+            _mapper = mapper;
         }
 
         public User CreateUser(User user)
@@ -19,35 +24,50 @@ namespace Babel.Service
 
         }
 
-        public bool ChangeUserStatus(int id)
+        public Result<UserDto> ChangeUserStatus(int id)
         {
             var user = _userRepository.GetUser(id);
-
             if (user == null)
             {
-                throw new KeyNotFoundException($"User with ID {id} not found.");
+                return Result<UserDto>.Failure(UserErrors.UserNotFound(id));
             }
-
             user.Active = !user.Active;
             _userRepository.UpdateUser(user);
-            return user.Active;
+
+            var userDto = _mapper.Map<UserDto>(user);
+
+            return Result<UserDto>.Success(userDto);
         }
 
-        public User UpdateUser(int id)
+         User IUserService.UpdateUser(int id)
         {
             throw new NotImplementedException();
         }
 
-        User IUserService.GetUser(int id)
+         public Result<UserDto> GetUser(int id)
         {
             var user = _userRepository.GetUser(id);
-            return user;
+            if (user == null)
+            {
+                return Result<UserDto>.Failure(UserErrors.UserNotFound(id));
+            }
+
+            var userDto = _mapper.Map<UserDto>(user);
+
+            return Result<UserDto>.Success(userDto);
         }
 
 
-        List<User> IUserService.GetUsers()
+         public Result<List<UserDto>> GetUsers()
         {
-            return _userRepository.GetUsers();
+            var users = _userRepository.GetUsers();
+
+            if (users == null || !users.Any())
+            {
+                return Result<List<UserDto>>.Failure(UserErrors.NoUsersFound);
+            }
+            var userDtos = _mapper.Map<List<UserDto>>(users);
+            return Result<List<UserDto>>.Success(userDtos);
         }
 
     }

@@ -33,8 +33,11 @@ namespace Babel.Models.Dtos
         [StringLength(500, ErrorMessage = "Description can't be longer than 500 characters")]
         public string Description { get; set; } = string.Empty;
 
+        public bool? Active { get; set; }
 
         public List<string> Roles { get; set; } = new List<string>();
+
+
 
     }
 }
