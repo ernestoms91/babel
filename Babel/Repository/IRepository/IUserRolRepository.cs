@@ -7,6 +7,7 @@ namespace Babel.Repository.IRepository
 
         UserRol Create( UserRol userRol);
         UserRol Update(UserRol userRol);
+        void SaveChanges();
 
     }
 }

@@ -107,38 +107,29 @@ namespace Babel.Controllers
         [HttpPost("/new")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult NewUser([FromBody] NewUserDto newUsuarioDto)
+        [HttpPost("new-user")]
+        public async Task<IActionResult> NewUser([FromBody] NewUserDto newUsuarioDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var role = _roleService.GetRole(newUsuarioDto.Role);
+            // Llama al método CreateUserAsync de manera asincrónica
+            var result = await _userService.CreateUserAsync(newUsuarioDto);
 
-            if (role == null)
-            {
-                return BadRequest((new
+            return result.Match(
+                onSuccess: user => Ok(new
                 {
-                    status = StatusCodes.Status400BadRequest,
-                    message = $"The {role.RoleName} role does not exist.",
-                    timestamp = DateTime.UtcNow,
+                    title = "User has been created",
+                    status = 200,
+                    data = user
+                }),
+                onFailure: error => BadRequest(new
+                {
+                    title = "Invalid User Request.",
+                    status = 400,
+                    error = error.Description
                 }));
-            }
-
-
-
-            return Ok(new
-            {
-                status = StatusCodes.Status200OK,
-                message = "User retrieved successfully.",
-                timestamp = DateTime.UtcNow,
-                //user = userDto
-            });
         }
-
-
-
-
-
-
     }
+
 }

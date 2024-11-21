@@ -12,6 +12,9 @@ namespace Babel.Mapper
             .ForMember(dest => dest.Roles,
                        opt => opt.MapFrom(src => src.UserRoles.Select(ur => ur.Role.RoleName))) // Mapeo de nombres de roles
             .ReverseMap();
+
+            CreateMap<NewUserDto, User>()
+            .ForMember(dest => dest.UserRoles, opt => opt.Ignore()).ReverseMap(); ; // Ignoramos UserRoles, ya que se manejan por separado
         }
     }
 }

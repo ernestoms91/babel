@@ -13,18 +13,22 @@ namespace Babel.Repository
         {
             _bd = bd;
         }
-        UserRol IUserRolRepository.Create(UserRol userRol)
-        {          
-            _bd.UsersRoles.Add(userRol);
-            _bd.SaveChanges();
+        public UserRol Create(UserRol userRol)
+        {
+            _bd.UsersRoles.Add(userRol); // Agrega el objeto a la base de datos
             return userRol;
         }
 
-        UserRol IUserRolRepository.Update(UserRol userRol)
+        public UserRol Update(UserRol userRol)
         {
             _bd.UsersRoles.Update(userRol);
             _bd.SaveChanges();
             return userRol;
+        }
+
+        public void SaveChanges() // Método para guardar cambios
+        {
+            _bd.SaveChanges();
         }
 
 

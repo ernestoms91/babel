@@ -17,18 +17,17 @@ namespace Babel.Repository
         public User CreateUser(User user)
         {
             _bd.Users.Add(user);
-            _bd.SaveChanges();
             return user;
         }
 
-        void IUserRepository.DeleteUser(User user)
+        public void DeleteUser(User user)
         {
             _bd.Remove(user);
             _bd.SaveChanges();
 
         }
 
-        User IUserRepository.GetUser(int id)
+        public User GetUser(int id)
         {
             return _bd.Users
              .Include(u => u.UserRoles) // Incluye la colección de UserRoles
@@ -50,5 +49,26 @@ namespace Babel.Repository
            _bd.Users.Entry(user).CurrentValues.SetValues(user);
             _bd.SaveChanges ();
         }
+
+        public User PhoneNumberExits(string phoneNumber)
+        {
+            return _bd.Users.SingleOrDefault(u => u.Phone == phoneNumber);
+        }
+
+        public User NidExits(string nid)
+        {
+            return _bd.Users.SingleOrDefault(u => u.Nid == nid);
+        }
+
+        public User EmailExits(string email)
+        {
+            return _bd.Users.SingleOrDefault(u => u.Email == email);
+        }
+
+        public void SaveChanges() // Agrega este método
+        {
+            _bd.SaveChanges();
+        }
+
     }
 }

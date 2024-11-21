@@ -12,6 +12,12 @@ namespace Babel.Errors
             "Users.UserNotFound", $"User with ID '{id}' not found.");
 
         public static Error InvalidUserData => new Error("Users.InvalidUserData", "The provided user data is invalid.");
+
+        public static Error PhoneNumberAlreadyExists => new Error("Users.PhoneNumberAlreadyExists", "Phone number already exists.");
+
+        public static Error NidAlreadyExists => new Error("Users.NidAlreadyExists", "NID already exists.");
+
+        public static Error EmailAlreadyExists => new Error("Users.EmailAlreadyExists", "Email already exists.");
     }
 
 }
