@@ -4,10 +4,11 @@ namespace Babel.Repository.IRepository
 {
     public interface IRoleRepository
     {
-            List<Role> GetRoles();
-            Role GetRole(int id);
-            Role CreateRole(Role role); 
-            Role UpdateRole(Role role);  
-            void DeleteRole(Role role);  
+        Task<List<Role>> GetRolesAsync();
+        Task<List<Role>> GetRolesByIdsAsync(int[] roleIds);
+        Task<Role> GetRoleAsync(int id);
+        Task<Role> CreateRoleAsync(Role role);
+        Task<Role> UpdateRoleAsync(Role role);
+        Task DeleteRoleAsync(Role role);
     }
 }

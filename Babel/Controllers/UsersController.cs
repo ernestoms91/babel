@@ -17,50 +17,48 @@ namespace Babel.Controllers
     {
         private readonly IUserService _userService;
         private readonly IRoleService _roleService;
+        private readonly IUserRoleService _userRoleService;
         private readonly IMapper _mapper;
 
-        public UsersController(IUserService userService, IRoleService roleService, IMapper mapper)
+        public UsersController(IUserService userService, IRoleService roleService, IUserRoleService userRoleService, IMapper mapper)
         {
             _userService = userService;
             _roleService = roleService;
+            _userRoleService = userRoleService;
             _mapper = mapper;
         }
 
         [HttpGet("/all")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetUsers()
+        public async Task<IActionResult> GetUsers() // Método ahora asincrónico
         {
-            var result = _userService.GetUsers();
+            var result = await _userService.GetUsersAsync(); // Llamada asincrónica al servicio
 
-            // Usa el método Match para manejar el resultado
             return result.Match(
                 onSuccess: users => Ok(new
                 {
-                    title = "Users retrieved successfully.",  
+                    title = "Users retrieved successfully.",
                     status = 200,
-                    data = users  
+                    data = users
                 }),
                 onFailure: error => NotFound(new
                 {
                     title = "No users found.",
                     status = 404,
-                    error = error.Description  // Detalle del error en la respuesta
+                    error = error.Description
                 }));
-
         }
-
 
         [HttpGet("/{id}")]
         [ServiceFilter(typeof(ValidateId))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult GetUser([FromRoute] int id)
+        public async Task<IActionResult> GetUser([FromRoute] int id) // Método ahora asincrónico
         {
-            var result = _userService.GetUser(id);
+            var result = await _userService.GetUserAsync(id); // Llamada asincrónica al servicio
 
-            // Usa el método Match para manejar el resultado
             return result.Match(
                 onSuccess: user => Ok(new
                 {
@@ -74,7 +72,6 @@ namespace Babel.Controllers
                     status = 404,
                     error = error.Description
                 }));
-
         }
 
         [HttpPatch("/change/status/{id}")]
@@ -82,39 +79,35 @@ namespace Babel.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-
-        public IActionResult ChangeUserStatus([FromRoute] int id)
+        public async Task<IActionResult> ChangeUserStatus([FromRoute] int id) // Método ahora asincrónico
         {
-           var result = _userService.ChangeUserStatus(id);
+            var result = await _userService.ChangeUserStatusAsync(id); // Llamada asincrónica al servicio
 
             return result.Match(
-               onSuccess: user => Ok(new
-               {
-                   title = "User status has been changed",
-                   status = 200,
-                   data = user
-               }),
-               onFailure: error => NotFound(new
-               {
-                   title = "No user found.",
-                   status = 404,
-                   error = error.Description
-               }));
-
+                onSuccess: user => Ok(new
+                {
+                    title = "User status has been updated",
+                    status = 200,
+                    data = user
+                }),
+                onFailure: error => NotFound(new
+                {
+                    title = "No user found.",
+                    status = 404,
+                    error = error.Description
+                }));
         }
-
 
         [HttpPost("/new")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpPost("new-user")]
         public async Task<IActionResult> NewUser([FromBody] NewUserDto newUsuarioDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            // Llama al método CreateUserAsync de manera asincrónica
-            var result = await _userService.CreateUserAsync(newUsuarioDto);
+            // Llamada asincrónica al servicio CreateUserAsync
+            var result = await _userRoleService.CreateAsync(newUsuarioDto);
 
             return result.Match(
                 onSuccess: user => Ok(new
@@ -130,6 +123,33 @@ namespace Babel.Controllers
                     error = error.Description
                 }));
         }
+
+        [HttpPut("/update")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateUser([FromBody] UpdateUserDto updateUserDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            // Llamada asincrónica al servicio CreateUserAsync
+            var result = await _userRoleService.UpdateAsync(updateUserDto);
+
+            return result.Match(
+                onSuccess: user => Ok(new
+                {
+                    title = "User has been created",
+                    status = 200,
+                    data = user
+                }),
+                onFailure: error => BadRequest(new
+                {
+                    title = "Invalid User Request.",
+                    status = 400,
+                    error = error.Description
+                }));
+        }
+
     }
 
 }

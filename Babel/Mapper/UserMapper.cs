@@ -4,7 +4,7 @@ using Babel.Models.Dtos;
 
 namespace Babel.Mapper
 {
-    public class UserMapper: Profile
+    public class UserMapper : Profile
     {
         public UserMapper()
         {
@@ -14,7 +14,11 @@ namespace Babel.Mapper
             .ReverseMap();
 
             CreateMap<NewUserDto, User>()
-            .ForMember(dest => dest.UserRoles, opt => opt.Ignore()).ReverseMap(); ; // Ignoramos UserRoles, ya que se manejan por separado
+             .ForMember(dest => dest.UserRoles, opt => opt.Ignore()).ReverseMap();
+
+            CreateMap<UpdateUserDto, User>()
+            .ForMember(dest => dest.UserRoles, opt => opt.Ignore()).ReverseMap();
+
         }
     }
 }

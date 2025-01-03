@@ -1,37 +1,45 @@
 ﻿using Babel.Data;
 using Babel.Models;
 using Babel.Repository.IRepository;
+using Microsoft.EntityFrameworkCore;
 
 namespace Babel.Repository
 {
     public class UserRoleRepository : IUserRolRepository
     {
-
         private readonly ApplicationDbContext _bd;
-
         public UserRoleRepository(ApplicationDbContext bd)
         {
             _bd = bd;
         }
-        public UserRol Create(UserRol userRol)
+
+        public async Task CreateAsync(User user, List<UserRol> userRoles)
         {
-            _bd.UsersRoles.Add(userRol); // Agrega el objeto a la base de datos
-            return userRol;
+            await _bd.Users.AddAsync(user); // Agrega el usuario de manera asincrónica
+            await _bd.UsersRoles.AddRangeAsync(userRoles); // Agrega el objeto UserRol de manera asincrónica
+            await _bd.SaveChangesAsync(); // Guarda los cambios de manera asincrónica
         }
 
-        public UserRol Update(UserRol userRol)
+        public async Task UpdateAsync(User user, List<UserRol> userRoles)
         {
-            _bd.UsersRoles.Update(userRol);
-            _bd.SaveChanges();
-            return userRol;
+            _bd.Users.Update(user);
+            await _bd.UsersRoles.AddRangeAsync(userRoles);
+            await _bd.SaveChangesAsync();
         }
 
-        public void SaveChanges() // Método para guardar cambios
+        public async Task SaveChangesAsync()
         {
-            _bd.SaveChanges();
+            await _bd.SaveChangesAsync(); // Guarda los cambios de manera asincrónica
         }
 
+        public async Task RemoveByUserIdAsync(int id)
+        {
+            var userRoles = await _bd.UsersRoles
+         .Where(ur => ur.UsuarioId == id)
+         .ToListAsync();
 
-
+            _bd.UsersRoles.RemoveRange(userRoles);
+            await _bd.SaveChangesAsync();
+        }
     }
 }

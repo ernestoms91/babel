@@ -1,9 +1,11 @@
 ﻿using Babel.Data;
 using Babel.Models;
 using Babel.Repository.IRepository;
+using Microsoft.EntityFrameworkCore;
 
 namespace Babel.Repository
 {
+
     public class RoleRepository : IRoleRepository
     {
         private readonly ApplicationDbContext _db;
@@ -13,40 +15,43 @@ namespace Babel.Repository
             _db = db;
         }
 
-        public List<Role> GetRoles()
+        public async Task<List<Role>> GetRolesAsync()
         {
-            return _db.Roles
-                .ToList();
+            return await _db.Roles.ToListAsync();
         }
 
-        public Role GetRole(int id)
+        public async Task<Role?> GetRoleAsync(int id)
         {
-            return _db.Roles
-                .FirstOrDefault(r => r.Id == id);
+            return await _db.Roles.FirstOrDefaultAsync(r => r.Id == id);
         }
 
-        public Role CreateRole(Role role)
+        public async Task<Role> CreateRoleAsync(Role role)
         {
-            _db.Roles.Add(role);
-            _db.SaveChanges();
+            await _db.Roles.AddAsync(role);
+            await _db.SaveChangesAsync();
 
-            _db.Entry(role).Reload();
+            await _db.Entry(role).ReloadAsync();
             return role;
         }
 
-        public Role UpdateRole(Role role)
+        public async Task<Role> UpdateRoleAsync(Role role)
         {
             _db.Roles.Update(role);
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
 
-            _db.Entry(role).Reload();
+            await _db.Entry(role).ReloadAsync();
             return role;
         }
 
-        public void DeleteRole(Role role)
+        public async Task DeleteRoleAsync(Role role)
         {
             _db.Roles.Remove(role);
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
+        }
+
+        public async Task<List<Role>> GetRolesByIdsAsync(int[] roleIds)
+        {
+            return await _db.Roles.Where(r => roleIds.Contains(r.Id)).ToListAsync();
         }
     }
 }

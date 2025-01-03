@@ -4,10 +4,10 @@ namespace Babel.Service.IService
 {
     public interface IRoleService
     {
-        List<Role> GetRoles();       
-        Role GetRole(int id); 
-        Role CreateRole(Role role); 
-        Role UpdateRole(Role role); 
-        bool DeleteRole(int id);
+        Task<List<Role>> GetRolesAsync();    
+        Task<Role> GetRoleAsync(int id); 
+        Task<Role> CreateRoleAsync(Role role); 
+        Task<Role> UpdateRoleAsync(Role role); 
+        Task<bool> DeleteRoleAsync(int id);           
     }
 }

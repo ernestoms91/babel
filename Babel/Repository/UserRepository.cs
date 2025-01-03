@@ -7,68 +7,68 @@ namespace Babel.Repository
 {
     public class UserRepository : IUserRepository
     {
-        private readonly ApplicationDbContext _bd;
+           private readonly ApplicationDbContext _bd;
 
-        public UserRepository(ApplicationDbContext bd)
-        {
-            _bd = bd;
-        }
+    public UserRepository(ApplicationDbContext bd)
+    {
+        _bd = bd;
+    }
 
-        public User CreateUser(User user)
-        {
-            _bd.Users.Add(user);
-            return user;
-        }
+    public async Task<User> CreateUserAsync(User user)
+    {
+        await _bd.Users.AddAsync(user);
+        await _bd.SaveChangesAsync();
+        return user;
+    }
 
-        public void DeleteUser(User user)
-        {
-            _bd.Remove(user);
-            _bd.SaveChanges();
+    public async Task DeleteUserAsync(User user)
+    {
+        _bd.Users.Remove(user);
+        await _bd.SaveChangesAsync();
+    }
 
-        }
+    public async Task<User> GetUserAsync(int id)
+    {
+        return await _bd.Users
+            .Include(u => u.UserRoles) // Incluye la colección de UserRoles
+            .ThenInclude(ur => ur.Role) // Luego incluye la entidad Role asociada a UserRole
+            .FirstOrDefaultAsync(u => u.Id == id); // Busca el usuario por ID
+    }
 
-        public User GetUser(int id)
-        {
-            return _bd.Users
-             .Include(u => u.UserRoles) // Incluye la colección de UserRoles
-            .ThenInclude(ur => ur.Role) // Luego incluye la entidad Role asociada a UserRol
-        .FirstOrDefault(u => u.Id == id); // Busca el usuario por ID
-        }
+    public async Task<List<User>> GetUsersAsync()
+    {
+        return await _bd.Users
+            .Include(u => u.UserRoles) // Incluye la relación UserRoles
+                .ThenInclude(ur => ur.Role) // Incluye la relación Role a través de UserRoles
+            .OrderBy(u => u.UserName) // Ordena los usuarios por UserName
+            .ToListAsync(); // Convierte a lista de manera asincrónica
+    }
 
-        public List<User> GetUsers()
-        {
-            return _bd.Users
-                .Include(u => u.UserRoles) // Incluye la relación UserRoles
-                    .ThenInclude(ur => ur.Role) // Incluye la relación Role a través de UserRoles
-                .OrderBy(u => u.UserName) // Ordena los usuarios por UserName
-                .ToList(); // Convierte a lista
-        }
+    public async Task UpdateUserAsync(User user)
+    {
+        _bd.Entry(user).CurrentValues.SetValues(user);
+            await _bd.SaveChangesAsync();
+    }
 
-        public void UpdateUser(User user)
-        {
-           _bd.Users.Entry(user).CurrentValues.SetValues(user);
-            _bd.SaveChanges ();
-        }
+    public async Task<User> PhoneNumberExitsAsync(string phoneNumber)
+    {
+        return await _bd.Users.SingleOrDefaultAsync(u => u.Phone == phoneNumber);
+    }
 
-        public User PhoneNumberExits(string phoneNumber)
-        {
-            return _bd.Users.SingleOrDefault(u => u.Phone == phoneNumber);
-        }
+    public async Task<User> NidExitsAsync(string nid)
+    {
+        return await _bd.Users.SingleOrDefaultAsync(u => u.Nid == nid);
+    }
 
-        public User NidExits(string nid)
-        {
-            return _bd.Users.SingleOrDefault(u => u.Nid == nid);
-        }
+    public async Task<User> EmailExitsAsync(string email)
+    {
+        return await _bd.Users.SingleOrDefaultAsync(u => u.Email == email);
+    }
 
-        public User EmailExits(string email)
-        {
-            return _bd.Users.SingleOrDefault(u => u.Email == email);
-        }
-
-        public void SaveChanges() // Agrega este método
-        {
-            _bd.SaveChanges();
-        }
+    public async Task SaveChangesAsync()
+    {
+        await _bd.SaveChangesAsync();
+    }
 
     }
 }

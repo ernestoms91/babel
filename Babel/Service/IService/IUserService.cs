@@ -5,10 +5,13 @@ namespace Babel.Service.IService
 {
     public interface IUserService
     {
-        Result<List<UserDto>> GetUsers();
-        Result<UserDto> GetUser(int id);
-        Task<Result<UserDto>> CreateUserAsync(NewUserDto newUserDto);
-        User UpdateUser(int id);
-        Result<UserDto> ChangeUserStatus(int id);
+        Task<Result<List<UserDto>>> GetUsersAsync();
+        Task<Result<UserDto>> GetUserAsync(int id);
+        //Task<Result<UserDto>> CreateUserAsync(NewUserDto newUserDto);
+        Task<Result<User>> UpdateUserAsync(int id);
+        Task<Result<UserDto>> ChangeUserStatusAsync(int id);
     }
 }
+
+
+

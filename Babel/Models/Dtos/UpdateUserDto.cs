@@ -2,8 +2,12 @@
 
 namespace Babel.Models.Dtos
 {
-    public class NewUserDto
+    public class UpdateUserDto
     {
+        [Required(ErrorMessage = "Id is required")]
+        [Range(1, int.MaxValue, ErrorMessage = "Id must be a positive integer")]
+        public int Id { get; set; }
+
         [Required(ErrorMessage = "Name is required")]
         [StringLength(50, ErrorMessage = "Name can't be longer than 50 characters")]
         public string Name { get; set; } = string.Empty;
